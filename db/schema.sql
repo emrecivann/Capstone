@@ -1,3 +1,9 @@
+-- Drop existing tables in correct order (dependent tables first)
+DROP TABLE IF EXISTS shifts;
+DROP TABLE IF EXISTS workers;
+DROP TABLE IF EXISTS metro_lines;
+DROP TABLE IF EXISTS shift_patterns;
+
 -- Create metro_lines table
 CREATE TABLE IF NOT EXISTS metro_lines (
     line_id VARCHAR(3) PRIMARY KEY,
