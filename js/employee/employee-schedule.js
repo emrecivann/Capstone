@@ -1,5 +1,5 @@
 // Set default date to current month and handle authentication
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Check if worker is logged in
     const workerId = sessionStorage.getItem('workerId');
     const metroLine = sessionStorage.getItem('metroLine');
@@ -15,11 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
     metroLineInput.value = metroLine;
     metroLineInput.readOnly = true;
 
-    // Set default date to current month
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    document.getElementById('scheduleDate').value = `${year}-${month}`;
+    // Fetch available months for the worker
+    try {
+        const response = await fetch(`http://localhost:3000/api/worker/available-months?workerId=${workerId}`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch available months');
+        }
+
+        const months = await response.json();
+        const scheduleDateSelect = document.getElementById('scheduleDate');
+        
+        // Clear existing options except the first one
+        scheduleDateSelect.innerHTML = '<option value="">Select a month</option>';
+        
+        // Add options for each available month
+        months.forEach(({ year, month }) => {
+            const monthStr = String(month).padStart(2, '0');
+            const monthDate = new Date(year, month - 1, 1);
+            const monthName = monthDate.toLocaleString('default', { month: 'long' });
+            const option = document.createElement('option');
+            option.value = `${year}-${monthStr}`;
+            option.textContent = `${monthName} ${year}`;
+            scheduleDateSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error loading available months. Please try again later.');
+    }
 });
 
 // Handle schedule search
@@ -80,13 +103,18 @@ const displayWorkerSchedule = (shifts, scheduleDate) => {
     // Map shift types to hours
     const shiftHours = {
         'MORNING': '06:00 - 14:00',
-        'NIGHT': '14:00 - 22:00'
+        'NIGHT': '14:00 - 22:00',
+        'OFF': '-'
     };
     
     shifts.forEach(shift => {
         const row = document.createElement('tr');
+        // Format the date to show only YYYY-MM-DD
+        const shiftDate = new Date(shift.shift_date);
+        const formattedDate = shiftDate.toISOString().split('T')[0];
+        
         row.innerHTML = `
-            <td>${shift.shift_date}</td>
+            <td>${formattedDate}</td>
             <td>${shift.shift_type}</td>
             <td>${shiftHours[shift.shift_type]}</td>
         `;

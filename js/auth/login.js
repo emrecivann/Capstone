@@ -17,8 +17,8 @@ const handleLogin = (event) =>
 
     // Check if it's a supervisor login
     if (role === 'supervisor' && userId === 'admin' && password === 'admin')
-    {
-        window.location.href = '../../views/supervisor/supervisor-select-line.html';
+        {
+            window.location.href = '../../views/supervisor/supervisor-select-line.html';
         return false;
     }
 
@@ -35,7 +35,7 @@ const handleLogin = (event) =>
         return false;
     }
 
-    showError('Invalid credentials');
+        showError('Invalid credentials');
     return false;
 };
 
