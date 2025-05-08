@@ -16,15 +16,15 @@ const handleLogin = (event) =>
     }
 
     // TODO: In the future, this will be replaced with actual backend authentication
-    if (userId === 'admin' && password === ' ')
+    if (userId === 'admin' && password === 'admin')
     {
         // Redirect based on role
         if (role === 'supervisor')
         {
-            window.location.href = 'supervisor-select-line.html';
+            window.location.href = '../../views/supervisor/supervisor-select-line.html';
         } else
         {
-            window.location.href = 'employee-schedule.html';
+            window.location.href = '../../views/employee/employee-schedule.html';
         }
     } else
     {
