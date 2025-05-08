@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Metro Line Selection - Metro Istanbul</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Metro Istanbul Schedules SUPERVISOR</h1>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <form id="lineSelectionForm" onsubmit="return handleLineSelection(event)">
+                <div class="form-group">
+                    <label for="metroLine" class="form-label">Metro Line</label>
+                    <select id="metroLine" class="form-control" required>
+                        <option value="">Select Metro Line</option>
+                        <option value="M1">M1</option>
+                        <option value="M2">M2</option>
+                        <option value="M3">M3</option>
+                        <option value="M4">M4</option>
+                        <option value="M5">M5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="scheduleDate" class="form-label">Select Month and Year</label>
+                    <input type="month" id="scheduleDate" class="form-control date-picker" required>
+                </div>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary">Show the monthly schedule</button>
+                </div>
+            </form>
+
+            <p style="margin-top: 2rem; text-align: center;">
+                If you need any change in metro lines or drivers, 
+                <a href="#" onclick="return handleEditRequest(event)">click edit</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="js/supervisor.js"></script>
+</body>
+</html>

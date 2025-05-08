@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Schedule Overview - Metro Istanbul</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendar-day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .calendar-day:hover {
+            transform: translateY(-5px);
+        }
+        .shift {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Metro Istanbul Schedules SUPERVISOR</h1>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <div id="selectedInfo" style="margin-bottom: 2rem;">
+                <h2>Monthly Overview</h2>
+                <p>Line: <span id="selectedLine"></span></p>
+                <p>Month: <span id="selectedMonth"></span></p>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="globalVatmanCount">Set all vatman counts:</label>
+                <input type="number" id="globalVatmanCount" min="10" max="40" value="10">
+                <span style="font-size: 0.8rem; color: gray;">* The vatman count has to be between 10-40 for the schedule to be created properly.</span>
+            </div>
+
+            <div style="margin-bottom: 1rem; font-size: 0.9rem; color: gray;">
+                <strong>Shift Times:</strong><br>
+                Morning: 6am-12pm<br>
+                Afternoon: 12pm-6pm<br>
+                Night: 6pm-12am
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="vatmanTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Vatman Count <span style="font-size: 0.8rem; color: gray;">(10-40)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="vatmanTableBody">
+                        <!-- Table rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <button onclick="generateScheduleDirectly()" class="btn btn-primary">Generate Schedule</button>
+            </div>
+
+            <div id="scheduleSection" style="display: none; margin-top: 2rem;">
+                <h3>Generated Schedule</h3>
+                <div class="table-responsive">
+                    <div id="scheduleTable">
+                        <!-- Schedule will be generated here -->
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button onclick="generateScheduleDirectly()" class="btn btn-primary">Generate New Schedule</button>
+                    <button onclick="window.location.href='supervisor-select-line.html'" class="btn btn-primary" style="margin-left: 1rem;">Back to Line Selection</button>
+                </div>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+        </div>
+    </main>
+
+    <script src="js/driverData.js" type="module"></script>
+    <script src="js/supervisor-overview.js" type="module"></script>
+</body>
+</html>

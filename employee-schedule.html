@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Schedule Viewer - Metro Istanbul</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Metro Istanbul Schedules EMPLOYEE</h1>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <form id="scheduleForm" onsubmit="return handleScheduleSearch(event)">
+                <div class="form-group">
+                    <label for="metroLine" class="form-label">Metro Line</label>
+                    <input type="text" id="metroLine" class="form-control" value="M2" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="scheduleDate" class="form-label">Select Month and Year</label>
+                    <input type="month" id="scheduleDate" class="form-control date-picker" required>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">Show Schedule</button>
+                </div>
+            </form>
+
+            <div id="scheduleContainer" style="margin-top: 2rem; display: none;">
+                <h3>Schedule Results</h3>
+                <div id="scheduleData" class="schedule-container">
+                    <!-- Schedule data will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/employee-schedule.js"></script>
+</body>
+</html>
