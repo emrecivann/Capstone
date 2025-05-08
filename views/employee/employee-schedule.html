@@ -9,6 +9,9 @@
 <body>
     <header class="header">
         <h1 class="header-title">Metro Istanbul Schedules EMPLOYEE</h1>
+        <button onclick="handleLogout()" class="btn btn-secondary" style="position: absolute; right: 20px; top: 20px;">
+            Logout
+        </button>
     </header>
 
     <main class="container">
@@ -16,7 +19,7 @@
             <form id="scheduleForm" onsubmit="return handleScheduleSearch(event)">
                 <div class="form-group">
                     <label for="metroLine" class="form-label">Metro Line</label>
-                    <input type="text" id="metroLine" class="form-control" value="M2" required>
+                    <input type="text" id="metroLine" class="form-control" readonly>
                 </div>
 
                 <div class="form-group">

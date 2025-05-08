@@ -1,4 +1,11 @@
 const pool = require('./config');
+
+// Distribute shift patterns evenly among workers
+const getShiftPattern = (index) => {
+    const patterns = ['4_2', '5_2', '6_1'];
+    return patterns[index % patterns.length];
+};
+
 const metroDrivers = {
     M1: [
         { id: "M1D001", fullName: "Ahmet Yılmaz" },
@@ -48,13 +55,16 @@ async function migrateData() {
             );
         }
 
-        // Insert workers
+        // Insert workers with shift patterns
+        let workerIndex = 0;
         for (const [line, drivers] of Object.entries(metroDrivers)) {
             for (const driver of drivers) {
+                const shiftPattern = getShiftPattern(workerIndex);
                 await pool.query(
-                    'INSERT INTO workers (worker_id, full_name, metro_line_id) VALUES ($1, $2, $3) ON CONFLICT (worker_id) DO NOTHING',
-                    [driver.id, driver.fullName, line]
+                    'INSERT INTO workers (worker_id, full_name, metro_line_id, shift_pattern_id) VALUES ($1, $2, $3, $4) ON CONFLICT (worker_id) DO NOTHING',
+                    [driver.id, driver.fullName, line, shiftPattern]
                 );
+                workerIndex++;
             }
         }
 
