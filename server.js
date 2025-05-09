@@ -101,6 +101,17 @@ app.get('/api/shifts', async (req, res) => {
     }
 });
 
+// API endpoint to get all metro lines
+app.get('/api/metro-lines', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT line_id, line_name FROM metro_lines ORDER BY line_id');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching metro lines:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 }); 
