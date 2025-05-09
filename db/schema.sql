@@ -1,4 +1,5 @@
 -- Drop existing tables in correct order (dependent tables first)
+DROP TABLE IF EXISTS daily_worker_counts;
 DROP TABLE IF EXISTS shifts;
 DROP TABLE IF EXISTS workers;
 DROP TABLE IF EXISTS metro_lines;
