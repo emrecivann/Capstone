@@ -112,6 +112,63 @@ app.get('/api/metro-lines', async (req, res) => {
     }
 });
 
+// API endpoint to get daily worker counts for a metro line
+app.get('/api/worker-counts', async (req, res) => {
+    try {
+        const { line_id, year, month } = req.query;
+        
+        // Validate required parameters
+        if (!line_id || !year || !month) {
+            return res.status(400).json({ error: 'Missing required parameters' });
+        }
+
+        // Validate month and year format
+        const monthNum = parseInt(month, 10);
+        const yearNum = parseInt(year, 10);
+        
+        if (isNaN(monthNum) || monthNum < 1 || monthNum > 12 || isNaN(yearNum)) {
+            return res.status(400).json({ error: 'Invalid month or year format' });
+        }
+
+        // Create date range for the specified month
+        const startDate = `${yearNum}-${month.padStart(2, '0')}-01`;
+        const lastDay = getLastDayOfMonth(yearNum, monthNum);
+        const endDate = `${yearNum}-${month.padStart(2, '0')}-${lastDay}`;
+
+        console.log('Debug - Date range:', { startDate, endDate, line_id });
+
+        // Query to get worker counts for each day
+        const query = `
+            WITH RECURSIVE dates AS (
+                SELECT DATE($1) as date
+                UNION ALL
+                SELECT date + 1
+                FROM dates
+                WHERE date < DATE($2)
+            )
+            SELECT 
+                d.date::date as date,
+                COALESCE(COUNT(DISTINCT CASE WHEN s.shift_type != 'OFF' THEN s.worker_id END), 0) as worker_count
+            FROM dates d
+            LEFT JOIN shifts s ON d.date = s.shift_date
+            LEFT JOIN workers w ON s.worker_id = w.worker_id AND w.metro_line_id = $3
+            GROUP BY d.date
+            ORDER BY d.date;
+        `;
+
+        const result = await pool.query(query, [startDate, endDate, line_id]);
+        console.log('Debug - Query result:', result.rows);
+        
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching worker counts:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message 
+        });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 }); 

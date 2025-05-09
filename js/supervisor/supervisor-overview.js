@@ -1,65 +1,80 @@
-import { getDriversForLine, getRandomDrivers } from './driverData.js';
-
 // Constants
 const SHIFTS = ['Morning (6am-12pm)', 'Afternoon (12pm-6pm)', 'Night (6pm-12am)'];
 
 // Initialize page when loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const selectedLine = sessionStorage.getItem('selectedLine');
     const selectedDate = sessionStorage.getItem('selectedDate');
 
-    if (selectedLine && selectedDate) {
-        document.getElementById('selectedLine').textContent = selectedLine;
-        const [year, month] = selectedDate.split('-');
-        document.getElementById('selectedMonth').textContent = `${year}-${month}`;
-
-        const vatmanTableBody = document.getElementById('vatmanTableBody');
-        vatmanTableBody.innerHTML = '';
-
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const exampleCounts = Array(daysInMonth).fill(10);
-
-        const globalInput = document.getElementById('globalVatmanCount');
-        globalInput.onchange = () => {
-            const value = globalInput.value;
-            if (value >= 10 && value <= 40) {
-                const inputs = vatmanTableBody.getElementsByTagName('input');
-                for (let input of inputs) {
-                    input.value = value;
-                }
-            } else {
-                alert('Vatman count must be between 10 and 40.');
-            }
-        };
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const row = document.createElement('tr');
-            const dateCell = document.createElement('td');
-            const countCell = document.createElement('td');
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.min = 10;
-            input.max = 40;
-            input.value = exampleCounts[day - 1];
-            input.onchange = () => {
-                if (input.value < 10 || input.value > 40) {
-                    alert('Vatman count must be between 10 and 40.');
-                    input.value = Math.max(10, Math.min(input.value, 40));
-                }
-            };
-
-            const date = new Date(year, month - 1, day);
-            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-            dateCell.textContent = `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')} (${dayName})`;
-            countCell.appendChild(input);
-
-            row.appendChild(dateCell);
-            row.appendChild(countCell);
-            vatmanTableBody.appendChild(row);
-        }
-    } else {
+    if (!selectedLine || !selectedDate) {
         window.location.href = 'supervisor-select-line.html';
         return;
+    }
+
+    // Display selected line and month
+    document.getElementById('selectedLine').textContent = selectedLine;
+    
+    // Parse the date properly
+    const [year, month] = selectedDate.split('-');
+    document.getElementById('selectedMonth').textContent = `${year}-${month}`;
+
+    console.log('Debug - Selected values:', {
+        selectedLine,
+        selectedDate,
+        year,
+        month
+    });
+
+    try {
+        // Fetch worker counts from API
+        const url = `http://localhost:3000/api/worker-counts?line_id=${selectedLine}&year=${year}&month=${month}`;
+        console.log('Debug - API URL:', url);
+
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API Error:', errorData);
+            throw new Error(`Failed to fetch worker counts: ${errorData.error || response.statusText}`);
+        }
+        
+        const workerCounts = await response.json();
+        console.log('Debug - Worker counts:', workerCounts);
+
+        const tableBody = document.getElementById('workerTableBody');
+        tableBody.innerHTML = '';
+
+        if (workerCounts.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="2" style="text-align: center;">No data available for this month</td>';
+            tableBody.appendChild(row);
+            return;
+        }
+
+        // Create table rows for each day
+        workerCounts.forEach(({ date, worker_count }) => {
+            const row = document.createElement('tr');
+            
+            // Format the date to be more readable
+            const formattedDate = new Date(date);
+            const dayName = formattedDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const formattedDateStr = formattedDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            row.innerHTML = `
+                <td class="date-cell">${formattedDateStr} (${dayName})</td>
+                <td class="worker-count">${worker_count || 0}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = `Error loading worker counts: ${error.message}`;
+        errorMessage.style.display = 'block';
     }
 });
 
