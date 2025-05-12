@@ -169,6 +169,60 @@ app.get('/api/worker-counts', async (req, res) => {
     }
 });
 
+// API endpoint to get weekly schedule for a metro line
+app.get('/api/schedule/line/:lineId', async (req, res) => {
+    try {
+        const { lineId } = req.params;
+        const { startDate, endDate } = req.query;
+
+        if (!lineId || !startDate || !endDate) {
+            return res.status(400).json({ error: 'Missing required parameters' });
+        }
+
+        // Set start date to beginning of day and end date to end of day in UTC
+        const startDateUTC = new Date(startDate + 'T00:00:00.000Z');
+        const endDateUTC = new Date(endDate + 'T23:59:59.999Z');
+
+        // Fetch all active workers for the line
+        const workersResult = await pool.query(
+            `SELECT worker_id, full_name FROM workers WHERE metro_line_id = $1 AND is_active = true ORDER BY worker_id`,
+            [lineId]
+        );
+        const workers = workersResult.rows;
+
+        if (workers.length === 0) {
+            return res.json([]);
+        }
+
+        // Fetch all shifts for these workers in the date range
+        const workerIds = workers.map(w => w.worker_id);
+        const shiftsResult = await pool.query(
+            `SELECT worker_id, shift_date, shift_type FROM shifts 
+             WHERE worker_id = ANY($1) AND shift_date >= $2 AND shift_date <= $3
+             ORDER BY worker_id, shift_date`,
+            [workerIds, startDateUTC, endDateUTC]
+        );
+        const shifts = shiftsResult.rows;
+
+        // Map shifts to workers
+        const workerMap = {};
+        workers.forEach(w => {
+            workerMap[w.worker_id] = { worker_id: w.worker_id, full_name: w.full_name, shifts: [] };
+        });
+        shifts.forEach(s => {
+            // Convert the date to YYYY-MM-DD format without time component
+            const dateStr = s.shift_date.toISOString().split('T')[0];
+            workerMap[s.worker_id].shifts.push({ date: dateStr, shift_type: s.shift_type });
+        });
+
+        // Return as array
+        res.json(Object.values(workerMap));
+    } catch (error) {
+        console.error('Error fetching weekly schedule:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 }); 
