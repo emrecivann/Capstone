@@ -76,6 +76,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         errorMessage.textContent = `Error loading worker counts: ${error.message}`;
         errorMessage.style.display = 'block';
     }
+
+    // Add event listener for Generate Schedule button
+    const generateScheduleBtn = document.getElementById('generateScheduleBtn');
+    if (generateScheduleBtn) {
+        generateScheduleBtn.addEventListener('click', () => {
+            window.location.href = 'supervisor-weekly-schedule.html';
+        });
+    }
 });
 
 // Generate vatman count table

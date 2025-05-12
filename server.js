@@ -179,10 +179,6 @@ app.get('/api/schedule/line/:lineId', async (req, res) => {
             return res.status(400).json({ error: 'Missing required parameters' });
         }
 
-        // Set start date to beginning of day and end date to end of day in UTC
-        const startDateUTC = new Date(startDate + 'T00:00:00.000Z');
-        const endDateUTC = new Date(endDate + 'T23:59:59.999Z');
-
         // Fetch all active workers for the line
         const workersResult = await pool.query(
             `SELECT worker_id, full_name FROM workers WHERE metro_line_id = $1 AND is_active = true ORDER BY worker_id`,
@@ -200,7 +196,7 @@ app.get('/api/schedule/line/:lineId', async (req, res) => {
             `SELECT worker_id, shift_date, shift_type FROM shifts 
              WHERE worker_id = ANY($1) AND shift_date >= $2 AND shift_date <= $3
              ORDER BY worker_id, shift_date`,
-            [workerIds, startDateUTC, endDateUTC]
+            [workerIds, startDate, endDate]
         );
         const shifts = shiftsResult.rows;
 
@@ -210,9 +206,7 @@ app.get('/api/schedule/line/:lineId', async (req, res) => {
             workerMap[w.worker_id] = { worker_id: w.worker_id, full_name: w.full_name, shifts: [] };
         });
         shifts.forEach(s => {
-            // Convert the date to YYYY-MM-DD format without time component
-            const dateStr = s.shift_date.toISOString().split('T')[0];
-            workerMap[s.worker_id].shifts.push({ date: dateStr, shift_type: s.shift_type });
+            workerMap[s.worker_id].shifts.push({ date: s.shift_date, shift_type: s.shift_type });
         });
 
         // Return as array
