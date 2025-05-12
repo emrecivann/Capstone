@@ -86,6 +86,15 @@ body {
   background-color: var(--secondary-color);
 }
 
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
 .error-message {
   color: var(--error-color);
   font-size: 0.875rem;
