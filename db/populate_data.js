@@ -8,39 +8,39 @@ const getShiftPattern = (index) => {
 
 const metroDrivers = {
     M1: [
-        { id: "M1D001", fullName: "Ahmet Yılmaz" },
-        { id: "M1D002", fullName: "Mehmet Demir" },
-        { id: "M1D003", fullName: "Ayşe Kara" },
-        { id: "M1D004", fullName: "Fatma Çelik" },
-        { id: "M1D005", fullName: "Ali Öztürk" }
+        { id: "M1D001", fullName: "Kemal Yıldırım" },
+        { id: "M1D002", fullName: "Zeynep Aydın" },
+        { id: "M1D003", fullName: "Mustafa Koç" },
+        { id: "M1D004", fullName: "Elif Şahin" },
+        { id: "M1D005", fullName: "Burak Özdemir" }
     ],
     M2: [
-        { id: "M2D001", fullName: "Mehmet Yılmaz" },
-        { id: "M2D002", fullName: "Ayşe Demir" },
-        { id: "M2D003", fullName: "Ali Kara" },
-        { id: "M2D004", fullName: "Fatma Çelik" },
-        { id: "M2D005", fullName: "Ahmet Öztürk" }
+        { id: "M2D001", fullName: "İbrahim Kaya" },
+        { id: "M2D002", fullName: "Selin Arslan" },
+        { id: "M2D003", fullName: "Emre Çetin" },
+        { id: "M2D004", fullName: "Merve Doğan" },
+        { id: "M2D005", fullName: "Ozan Güneş" }
     ],
     M3: [
-        { id: "M3D001", fullName: "Ali Yılmaz" },
-        { id: "M3D002", fullName: "Ayşe Demir" },
-        { id: "M3D003", fullName: "Mehmet Kara" },
-        { id: "M3D004", fullName: "Fatma Çelik" },
-        { id: "M3D005", fullName: "Ahmet Öztürk" }
+        { id: "M3D001", fullName: "Deniz Korkmaz" },
+        { id: "M3D002", fullName: "Canan Erdoğan" },
+        { id: "M3D003", fullName: "Serkan Tekin" },
+        { id: "M3D004", fullName: "Melis Yalçın" },
+        { id: "M3D005", fullName: "Cem Aksoy" }
     ],
     M4: [
-        { id: "M4D001", fullName: "Ahmet Yılmaz" },
-        { id: "M4D002", fullName: "Ayşe Demir" },
-        { id: "M4D003", fullName: "Mehmet Kara" },
-        { id: "M4D004", fullName: "Fatma Çelik" },
-        { id: "M4D005", fullName: "Ali Öztürk" }
+        { id: "M4D001", fullName: "Tolga Demirci" },
+        { id: "M4D002", fullName: "Esra Kılıç" },
+        { id: "M4D003", fullName: "Murat Özkan" },
+        { id: "M4D004", fullName: "Seda Avcı" },
+        { id: "M4D005", fullName: "Onur Yüksel" }
     ],
     M5: [
-        { id: "M5D001", fullName: "Ahmet Yılmaz" },
-        { id: "M5D002", fullName: "Ayşe Demir" },
-        { id: "M5D003", fullName: "Mehmet Kara" },
-        { id: "M5D004", fullName: "Fatma Çelik" },
-        { id: "M5D005", fullName: "Ali Öztürk" }
+        { id: "M5D001", fullName: "Berk Toprak" },
+        { id: "M5D002", fullName: "Pınar Aslan" },
+        { id: "M5D003", fullName: "Alper Taş" },
+        { id: "M5D004", fullName: "Gizem Kurt" },
+        { id: "M5D005", fullName: "Umut Çakır" }
     ]
 };
 

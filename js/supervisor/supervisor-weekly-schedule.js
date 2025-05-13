@@ -19,6 +19,12 @@ function getUTCDateString(dateString) {
     return date.toISOString().split('T')[0];
 }
 
+function getLocalDateString(dateString) {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 3); // Istanbul is UTC+3
+    return date.toISOString().split('T')[0];
+}
+
 // State
 let currentStartDate = null;
 let currentEndDate = null;
@@ -97,8 +103,8 @@ function renderScheduleTable(data) {
         row.innerHTML = `<td>${worker.full_name} - ${worker.worker_id}</td>`;
         for (let d = 0; d < 7; d++) {
             const date = formatDate(new Date(currentStartDate.getTime() + d * 24 * 60 * 60 * 1000));
-            // Use UTC date string for comparison
-            const shift = worker.shifts.find(s => getUTCDateString(s.date) === date);
+            // Use local date string for comparison (Istanbul time)
+            const shift = worker.shifts.find(s => getLocalDateString(s.date) === date);
             row.innerHTML += `<td>${shift ? shift.shift_type.charAt(0) + shift.shift_type.slice(1).toLowerCase() : ''}</td>`;
         }
         table.appendChild(row);
