@@ -151,7 +151,8 @@ app.get('/api/worker-counts', async (req, res) => {
                 COALESCE(COUNT(DISTINCT CASE WHEN s.shift_type != 'OFF' THEN s.worker_id END), 0) as worker_count
             FROM dates d
             LEFT JOIN shifts s ON d.date = s.shift_date
-            LEFT JOIN workers w ON s.worker_id = w.worker_id AND w.metro_line_id = $3
+            LEFT JOIN workers w ON s.worker_id = w.worker_id
+            WHERE w.metro_line_id = $3
             GROUP BY d.date
             ORDER BY d.date;
         `;
